@@ -2,6 +2,9 @@
  * Create a list that holds all of your cards
  */
 
+var MemoryGame = {};
+MemoryGame.matchedCards = [];
+const MATCH = "match";
 
 /*
  * Display the cards on the page
@@ -12,19 +15,47 @@
 
 // Shuffle function from http://stackoverflow.com/a/2450976
 function shuffle(array) {
-    var currentIndex = array.length, temporaryValue, randomIndex;
+  var currentIndex = array.length,
+    temporaryValue,
+    randomIndex;
 
-    while (currentIndex !== 0) {
-        randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex -= 1;
-        temporaryValue = array[currentIndex];
-        array[currentIndex] = array[randomIndex];
-        array[randomIndex] = temporaryValue;
-    }
+  while (currentIndex !== 0) {
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
 
-    return array;
+  return array;
 }
 
+document.addEventListener("DOMContentLoaded", function() {
+  Array.prototype.push.apply(
+    MemoryGame.matchedCards,
+    document.querySelectorAll(MATCH)
+  );
+  let cards = document.querySelectorAll(".card");
+  cards.forEach(element => {
+    element.addEventListener("click", function() {
+      element.classList.add(MATCH);
+
+      let currentElement = element.getElementsByTagName("i")[0];
+      hideIfNotMatched(element);
+
+      return;
+    });
+  });
+});
+
+function hideIfNotMatched(currentElement) {
+  MemoryGame.matchedCards.forEach(element => {
+    if (element.classList[1] === currentElement.getElementsByTagName("i")[0])
+      return;
+    MemoryGame.matchedCards.push(currentElement);
+  });
+  currentElement.classList.remove(MATCH);
+}
 
 /*
  * set up the event listener for a card. If a card is clicked:
