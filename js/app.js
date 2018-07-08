@@ -4,8 +4,9 @@
 
 var MemoryGame = {};
 MemoryGame.matchedCards = [];
+MemoryGame.pairedArray = [];
 const MATCH = "match";
-
+const OPEN = "open";
 /*
  * Display the cards on the page
  *   - shuffle the list of cards using the provided "shuffle" method below
@@ -31,17 +32,16 @@ function shuffle(array) {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-  Array.prototype.push.apply(
-    MemoryGame.matchedCards,
-    document.querySelectorAll(MATCH)
-  );
   let cards = document.querySelectorAll(".card");
-  cards.forEach(element => {
-    element.addEventListener("click", function() {
-      element.classList.add(MATCH);
 
-      let currentElement = element.getElementsByTagName("i")[0];
-      hideIfNotMatched(element);
+  cards.forEach(currentElement => {
+    currentElement.addEventListener("click", function() {
+      //step 1: save in an array that can flick and stay in the DOM
+      currentElement.classList.add(MATCH);
+      //currentElement.getElementsByTagName("i")[0].classList.add(OPEN);
+
+      //step 2: add `match` class to make it visible in UI
+      hideIfNotMatched(currentElement);
 
       return;
     });
@@ -49,12 +49,25 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 function hideIfNotMatched(currentElement) {
-  MemoryGame.matchedCards.forEach(element => {
-    if (element.classList[1] === currentElement.getElementsByTagName("i")[0])
-      return;
-    MemoryGame.matchedCards.push(currentElement);
-  });
-  currentElement.classList.remove(MATCH);
+  MemoryGame.pairedArray.push(currentElement);
+  let pairedElements = MemoryGame.pairedArray.filter(
+    i =>
+      i.firstElementChild.classList.value ===
+      currentElement.firstElementChild.classList.value
+  );
+
+  //if not the first time and cards do not match remove them from DOM and hide from UI
+  if (pairedElements.length === 1 && MemoryGame.pairedArray.length === 2) {
+    MemoryGame.pairedArray.forEach(el => {
+      el.classList.remove(MATCH);
+    });
+    MemoryGame.pairedArray = [];
+  } else if (
+    MemoryGame.pairedArray.length === 2 &&
+    pairedElements.length === 2
+  ) {
+    MemoryGame.pairedArray = [];
+  }
 }
 
 /*
@@ -64,6 +77,6 @@ function hideIfNotMatched(currentElement) {
  *  - if the list already has another card, check to see if the two cards match
  *    + if the cards do match, lock the cards in the open position (put this functionality in another function that you call from this one)
  *    + if the cards do not match, remove the cards from the list and hide the card's symbol (put this functionality in another function that you call from this one)
- *    + increment the move counter and display it on the page (put this functionality in another function that you call from this one)
+ *    + increment the move pairedElementser and display it on the page (put this functionality in another function that you call from this one)
  *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
  */
