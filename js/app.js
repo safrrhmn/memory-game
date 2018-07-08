@@ -3,10 +3,92 @@
  */
 
 var MemoryGame = {};
-MemoryGame.matchedCards = [];
-MemoryGame.pairedArray = [];
 const MATCH = "match";
 const OPEN = "open";
+const SHOW = "show";
+const MOVES = "moves";
+const RESTART = "restart";
+const CARD = "card";
+
+MemoryGame.PLAY = {
+  initializeVariables: function() {
+    MemoryGame.pairedArray = [];
+    MemoryGame.cards = document.querySelectorAll(`.${CARD}`);
+  },
+  doPlay: function() {
+    MemoryGame.cards.forEach(currentElement => {
+      currentElement.addEventListener("click", function(ev) {
+        if (currentElement.classList.contains(MATCH)) return;
+        if (currentElement.classList.contains(OPEN)) return;
+
+        MemoryGame.pairedArray.push(currentElement);
+
+        //step 1: save in an array that can flick and stay in the DOM
+        currentElement.classList.add(OPEN, SHOW);
+        //step 2: add `match` class to make it visible in UI
+        MemoryGame.DISPLAY.doMatch(currentElement);
+
+        return;
+      });
+    });
+  },
+  trackMoves: function() {
+    if (MemoryGame.pairedArray.length === 2) {
+      let moves = document.getElementsByClassName(MOVES)[0].textContent;
+      document.getElementsByClassName(MOVES)[0].textContent = String(
+        parseInt(moves) + 1
+      );
+    }
+  },
+  doRestartGame: function() {
+    document
+      .getElementsByClassName(RESTART)[0]
+      .addEventListener("click", function() {
+        restart();
+        resetMovesToZero();
+      });
+
+    function resetMovesToZero() {
+      document.getElementsByClassName(MOVES)[0].textContent = "0";
+    }
+    function restart() {
+      document.querySelectorAll("li").forEach(el => {
+        el.classList.remove(MATCH);
+      });
+    }
+  }
+};
+
+MemoryGame.DISPLAY = {
+  doMatch: function(currentElement) {
+    let pairedElements = MemoryGame.pairedArray.filter(
+      i =>
+        i.firstElementChild.classList.value ===
+        currentElement.firstElementChild.classList.value
+    );
+
+    //track moves
+    MemoryGame.PLAY.trackMoves();
+
+    //if not the first time and cards do not match remove them from DOM and hide from UI
+    if (pairedElements.length === 1 && MemoryGame.pairedArray.length === 2) {
+      MemoryGame.pairedArray.forEach(el => {
+        el.classList.remove(OPEN, SHOW);
+      });
+      MemoryGame.pairedArray = [];
+    } else if (
+      MemoryGame.pairedArray.length === 2 &&
+      pairedElements.length === 2
+    ) {
+      MemoryGame.pairedArray.forEach(el => {
+        el.classList.remove(OPEN, SHOW);
+        el.classList.add(MATCH);
+      });
+      MemoryGame.pairedArray = [];
+    }
+  }
+};
+
 /*
  * Display the cards on the page
  *   - shuffle the list of cards using the provided "shuffle" method below
@@ -32,43 +114,10 @@ function shuffle(array) {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-  let cards = document.querySelectorAll(".card");
-
-  cards.forEach(currentElement => {
-    currentElement.addEventListener("click", function() {
-      //step 1: save in an array that can flick and stay in the DOM
-      currentElement.classList.add(MATCH);
-      //currentElement.getElementsByTagName("i")[0].classList.add(OPEN);
-
-      //step 2: add `match` class to make it visible in UI
-      hideIfNotMatched(currentElement);
-
-      return;
-    });
-  });
+  MemoryGame.PLAY.initializeVariables();
+  MemoryGame.PLAY.doPlay();
+  MemoryGame.PLAY.doRestartGame();
 });
-
-function hideIfNotMatched(currentElement) {
-  MemoryGame.pairedArray.push(currentElement);
-  let pairedElements = MemoryGame.pairedArray.filter(
-    i =>
-      i.firstElementChild.classList.value ===
-      currentElement.firstElementChild.classList.value
-  );
-
-  //if not the first time and cards do not match remove them from DOM and hide from UI
-  if (pairedElements.length === 1 && MemoryGame.pairedArray.length === 2) {
-    MemoryGame.pairedArray.forEach(el => {
-      el.classList.remove(MATCH);
-    });
-    MemoryGame.pairedArray = [];
-  } else if (
-    MemoryGame.pairedArray.length === 2 &&
-    pairedElements.length === 2
-  ) {
-    MemoryGame.pairedArray = [];
-  }
-}
 
 /*
  * set up the event listener for a card. If a card is clicked:
