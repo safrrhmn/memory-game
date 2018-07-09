@@ -9,15 +9,17 @@ const SHOW = "show";
 const MOVES = "moves";
 const RESTART = "restart";
 const CARD = "card";
+const DECK = "deck";
 
 MemoryGame.PLAY = {
   initializeVariables: function() {
     MemoryGame.pairedArray = [];
     MemoryGame.cards = document.querySelectorAll(`.${CARD}`);
+    MemoryGame.deck = document.getElementsByClassName(DECK)[0];
   },
   doPlay: function() {
     MemoryGame.cards.forEach(currentElement => {
-      currentElement.addEventListener("click", function(ev) {
+      currentElement.addEventListener("click", function() {
         if (currentElement.classList.contains(MATCH)) return;
         if (currentElement.classList.contains(OPEN)) return;
 
@@ -60,6 +62,37 @@ MemoryGame.PLAY = {
 };
 
 MemoryGame.DISPLAY = {
+  doShuffle: function() {
+    MemoryGame.deck.innerHTML = "";
+    let copyOfCards = MemoryGame.cards;
+    
+    
+    let shuffled = shuffle(copyOfCards);
+    shuffled.forEach(e => MemoryGame.deck.appendChild(e));
+    /*
+    * Display the cards on the page
+    *   - shuffle the list of cards using the provided "shuffle" method below
+    *   - loop through each card and create its HTML
+    *   - add each card's HTML to the page
+    */
+
+    // Shuffle function from http://stackoverflow.com/a/2450976
+    function shuffle(array) {
+      var currentIndex = array.length,
+        temporaryValue,
+        randomIndex;
+
+      while (currentIndex !== 0) {
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+        temporaryValue = array[currentIndex];
+        array[currentIndex] = array[randomIndex];
+        array[randomIndex] = temporaryValue;
+      }
+
+      return array;
+    }
+  },
   doMatch: function(currentElement) {
     let pairedElements = MemoryGame.pairedArray.filter(
       i =>
@@ -89,32 +122,9 @@ MemoryGame.DISPLAY = {
   }
 };
 
-/*
- * Display the cards on the page
- *   - shuffle the list of cards using the provided "shuffle" method below
- *   - loop through each card and create its HTML
- *   - add each card's HTML to the page
- */
-
-// Shuffle function from http://stackoverflow.com/a/2450976
-function shuffle(array) {
-  var currentIndex = array.length,
-    temporaryValue,
-    randomIndex;
-
-  while (currentIndex !== 0) {
-    randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex -= 1;
-    temporaryValue = array[currentIndex];
-    array[currentIndex] = array[randomIndex];
-    array[randomIndex] = temporaryValue;
-  }
-
-  return array;
-}
-
 document.addEventListener("DOMContentLoaded", function() {
   MemoryGame.PLAY.initializeVariables();
+  MemoryGame.DISPLAY.doShuffle();
   MemoryGame.PLAY.doPlay();
   MemoryGame.PLAY.doRestartGame();
 });
