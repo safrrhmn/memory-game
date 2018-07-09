@@ -14,6 +14,7 @@ const DECK = "deck";
 MemoryGame.PLAY = {
   initializeVariables: function() {
     MemoryGame.pairedArray = [];
+    MemoryGame.timeoutInMs = 1000;
     MemoryGame.cards = document.querySelectorAll(`.${CARD}`);
     MemoryGame.deck = document.getElementsByClassName(DECK)[0];
   },
@@ -64,11 +65,9 @@ MemoryGame.PLAY = {
 MemoryGame.DISPLAY = {
   doShuffle: function() {
     MemoryGame.deck.innerHTML = "";
-    let copyOfCards = MemoryGame.cards;
-    
-    
-    let shuffled = shuffle(copyOfCards);
-    shuffled.forEach(e => MemoryGame.deck.appendChild(e));
+
+    let copyOfCards = [...MemoryGame.cards];
+    shuffle(copyOfCards).forEach(e => MemoryGame.deck.appendChild(e));
     /*
     * Display the cards on the page
     *   - shuffle the list of cards using the provided "shuffle" method below
@@ -106,7 +105,9 @@ MemoryGame.DISPLAY = {
     //if not the first time and cards do not match remove them from DOM and hide from UI
     if (pairedElements.length === 1 && MemoryGame.pairedArray.length === 2) {
       MemoryGame.pairedArray.forEach(el => {
-        el.classList.remove(OPEN, SHOW);
+        setTimeout(function() {
+          el.classList.remove(OPEN, SHOW);
+        }, MemoryGame.timeoutInMs);
       });
       MemoryGame.pairedArray = [];
     } else if (
