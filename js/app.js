@@ -10,11 +10,14 @@ const MOVES = "moves";
 const RESTART = "restart";
 const CARD = "card";
 const DECK = "deck";
+const STAR_HALF_FULL = "fa-star-half-o";
+const STAR_FULL_EMPTY = "fa fa-star-o";
+const FULL_STAR = "fa-star";
 
 MemoryGame.PLAY = {
   initializeVariables: function() {
     MemoryGame.pairedArray = [];
-    MemoryGame.timeoutInMs = 1000;
+    MemoryGame.timeoutInMs = 500;
     MemoryGame.cards = document.querySelectorAll(`.${CARD}`);
     MemoryGame.deck = document.getElementsByClassName(DECK)[0];
   },
@@ -30,7 +33,7 @@ MemoryGame.PLAY = {
         currentElement.classList.add(OPEN, SHOW);
         //step 2: add `match` class to make it visible in UI
         MemoryGame.DISPLAY.doMatch(currentElement);
-
+        MemoryGame.DISPLAY.showModelIfApplicable();
         return;
       });
     });
@@ -41,6 +44,20 @@ MemoryGame.PLAY = {
       document.getElementsByClassName(MOVES)[0].textContent = String(
         parseInt(moves) + 1
       );
+    }
+  },
+  reduceStar: function() {
+    let moves = document.getElementsByClassName(MOVES)[0].textContent;
+    let movesToInt = parseInt(moves);
+    let fullStars = document.getElementsByClassName(FULL_STAR)[0];
+    let halfStars = document.getElementsByClassName(STAR_HALF_FULL)[0];
+    if (movesToInt % 4 === 2 && fullStars != undefined) {
+      let elem = document.getElementsByClassName(FULL_STAR)[0];
+      elem.classList.remove(FULL_STAR);
+      elem.classList.add(STAR_HALF_FULL);
+    } else if (movesToInt % 8 === 2 && halfStars != undefined) {
+      let elem = document.getElementsByClassName(STAR_HALF_FULL)[0];
+      elem.classList.remove(STAR_HALF_FULL);
     }
   },
   doRestartGame: function() {
@@ -101,6 +118,8 @@ MemoryGame.DISPLAY = {
 
     //track moves
     MemoryGame.PLAY.trackMoves();
+    //track star
+    MemoryGame.PLAY.reduceStar();
 
     //if not the first time and cards do not match remove them from DOM and hide from UI
     if (pairedElements.length === 1 && MemoryGame.pairedArray.length === 2) {
@@ -119,6 +138,18 @@ MemoryGame.DISPLAY = {
         el.classList.add(MATCH);
       });
       MemoryGame.pairedArray = [];
+    }
+  },
+  showModelIfApplicable: function() {
+    let matchedCardCount = document.querySelectorAll(`.${CARD}.${MATCH}`)
+      .length;
+    if (matchedCardCount === 16) {
+        let move = document.getElementsByClassName(MOVES)[0].textContent;
+        let stars = document.getElementsByClassName(FULL_STAR).length;
+      //replace with modal
+      window.alert(
+        `You have succesfully completed the game with ${move} moves and ${stars} stars.`
+      );
     }
   }
 };
