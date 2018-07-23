@@ -14,6 +14,7 @@ body {
 	height: 100%;
 	margin: 0;
 	padding: 0;
+	opacity: 100%;
 }
 
 body {
@@ -103,11 +104,6 @@ h1 {
 	display: inline-block;
 }
 
-.score-panel .restart {
-	float: right;
-	cursor: pointer;
-}
-
 /*
 modal
 */
@@ -117,23 +113,26 @@ modal
 	z-index: 1;
 	left: 30%;
 	top: 20%;
-	height: 30%;
+	height: 50%;
 	width: 30%;
 	overflow: auto;
-	background-color: rgba(0, 0, 0, 0.5);
+	background-color: rgba(0, 0, 0, .8);
 	color: #ffffff;
 	text-align: center;
 }
 
+.restart,
 .closeBtn {
 	float: right;
+	cursor: pointer;
 	top: 0%;
-	font-size: 30px;
+	font-size: 20px;
 	color: black;
 }
 
 #modalContent {
-	margin: 20% auto;
+	/*margin: 20% auto;*/
+	height: 50%;
 	width: 70%;
 	animation-name: modalopen;
 	animation-duration: 1s;

@@ -20,6 +20,8 @@ MemoryGame.PLAY = {
 		MemoryGame.timeoutInMs = 500;
 		MemoryGame.cards = document.querySelectorAll(`.${CARD}`);
 		MemoryGame.deck = document.getElementsByClassName(DECK)[0];
+		let stars = document.getElementById('stars');
+		MemoryGame.stars = stars.cloneNode(true);
 	},
 	doPlay: function() {
 		MemoryGame.cards.forEach((currentElement) => {
@@ -59,12 +61,10 @@ MemoryGame.PLAY = {
 		}
 	},
 	doRestartGame: function() {
-		document.querySelectorAll(RESTART).forEach((e) => {
-      e.style.display='block';
-			e.addEventListener('click', function() {
-				restart();
-				resetMovesToZero();
-			});
+		document.getElementsByClassName(RESTART)[0].addEventListener('click', function() {
+			restart();
+			resetMovesToZero();
+			resetStarts();
 		});
 
 		function resetMovesToZero() {
@@ -74,6 +74,10 @@ MemoryGame.PLAY = {
 			document.querySelectorAll('li').forEach((el) => {
 				el.classList.remove(MATCH);
 			});
+		}
+		function resetStarts() {
+			document.getElementById('stars').remove();
+			document.getElementsByClassName('score-panel')[0].appendChild(MemoryGame.stars);
 		}
 	}
 };
@@ -145,11 +149,18 @@ MemoryGame.MODAL = {
 		let move = document.getElementsByClassName(MOVES)[0].textContent;
 		let stars = document.getElementsByClassName(FULL_STAR).length;
 		//replace with modal
-		//window.alert(`You have succesfully completed the game with ${move} moves and ${stars} stars.`);
-		document.getElementById('modal').style.display = 'block';
+		let modal = document.getElementById('modal');
+		modal.style.display = 'block';
 		document.getElementById(
 			'contentText'
 		).textContent = `You have succesfully completed the game with ${move} moves and ${stars} stars.`;
+	},
+	closeModal: function() {
+		document.getElementsByClassName('closeBtn')[0].addEventListener('click', function() {
+			let modal = document.getElementById('modal');
+			modal.classList.add('modal-closed');
+			modal.style.display = 'none';
+		});
 	}
 };
 
@@ -157,6 +168,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	MemoryGame.PLAY.initializeVariables();
 	MemoryGame.DISPLAY.doShuffle();
 	MemoryGame.PLAY.doPlay();
+	MemoryGame.MODAL.closeModal();
 	MemoryGame.PLAY.doRestartGame();
 });
 
