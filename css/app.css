@@ -107,20 +107,21 @@ h1 {
 /*
 modal
 */
+
 #modal {
 	display: none;
-	position: fixed;
-	z-index: 1;
-	left: 30%;
-	top: 20%;
+	padding: 20px;
+	position: absolute;
+	top: 200px;
+	width: 50%;
+	right: 30%;
 	height: 50%;
-	width: 30%;
-	overflow: auto;
-	background-color: rgba(0, 0, 0, .8);
-	color: #ffffff;
-	text-align: center;
+	background-color: white;
+	border: 1px solid #ddd;
+	box-shadow: 0.2px 0.6px 0.5px 0.5px;
+	z-index: 1;
+	opacity: 100 !important;
 }
-
 .restart,
 .closeBtn {
 	float: right;

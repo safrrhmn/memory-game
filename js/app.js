@@ -22,6 +22,7 @@ MemoryGame.PLAY = {
 		MemoryGame.deck = document.getElementsByClassName(DECK)[0];
 		let stars = document.getElementById('stars');
 		MemoryGame.stars = stars.cloneNode(true);
+		MemoryGame.startTime = new Date();
 	},
 	doPlay: function() {
 		MemoryGame.cards.forEach((currentElement) => {
@@ -40,7 +41,7 @@ MemoryGame.PLAY = {
 			});
 		});
 	},
-	trackMoves: function() {
+	trackMovesAndTime: function() {
 		if (MemoryGame.pairedArray.length === 2) {
 			let moves = document.getElementsByClassName(MOVES)[0].textContent;
 			document.getElementsByClassName(MOVES)[0].textContent = String(parseInt(moves) + 1);
@@ -49,15 +50,18 @@ MemoryGame.PLAY = {
 	reduceStar: function() {
 		let moves = document.getElementsByClassName(MOVES)[0].textContent;
 		let movesToInt = parseInt(moves);
-		let fullStars = document.getElementsByClassName(FULL_STAR)[0];
-		let halfStars = document.getElementsByClassName(STAR_HALF_FULL)[0];
-		if (movesToInt % 4 === 2 && fullStars != undefined) {
-			let elem = document.getElementsByClassName(FULL_STAR)[0];
-			elem.classList.remove(FULL_STAR);
-			elem.classList.add(STAR_HALF_FULL);
-		} else if (movesToInt % 8 === 2 && halfStars != undefined) {
-			let elem = document.getElementsByClassName(STAR_HALF_FULL)[0];
-			elem.classList.remove(STAR_HALF_FULL);
+		let fullStars = document.getElementsByClassName(FULL_STAR);
+		let halfStar = document.getElementsByClassName(STAR_HALF_FULL);
+		if (movesToInt !== 0 && movesToInt % 4 === 0 && (halfStar.length !== 0 || fullStars.length !== 1)) {
+			let fullElem = document.getElementsByClassName(FULL_STAR);
+			let halfElem = document.getElementsByClassName(STAR_HALF_FULL);
+			if (halfElem.length !== 0) {
+				halfElem[0].classList.remove(STAR_HALF_FULL);
+			} else if (halfElem.length === 0 && fullElem.length !== 1) {
+				let targetStarElem = fullElem[0];
+				targetStarElem.classList.remove(FULL_STAR);
+				targetStarElem.classList.add(STAR_HALF_FULL);
+			}
 		}
 	},
 	doRestartGame: function() {
@@ -118,7 +122,7 @@ MemoryGame.DISPLAY = {
 		);
 
 		//track moves
-		MemoryGame.PLAY.trackMoves();
+		MemoryGame.PLAY.trackMovesAndTime();
 		//track star
 		MemoryGame.PLAY.reduceStar();
 
@@ -148,12 +152,13 @@ MemoryGame.MODAL = {
 	displayModal: function() {
 		let move = document.getElementsByClassName(MOVES)[0].textContent;
 		let stars = document.getElementsByClassName(FULL_STAR).length;
+		let timeTaken = (new Date() - MemoryGame.startTime)/1000;
 		//replace with modal
 		let modal = document.getElementById('modal');
 		modal.style.display = 'block';
 		document.getElementById(
 			'contentText'
-		).textContent = `You have succesfully completed the game with ${move} moves and ${stars} stars.`;
+		).textContent = `You have succesfully completed the game with ${move} moves, ${stars} stars and in ${timeTaken} s`;
 	},
 	closeModal: function() {
 		document.getElementsByClassName('closeBtn')[0].addEventListener('click', function() {
