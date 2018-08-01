@@ -22,9 +22,9 @@ MemoryGame.PLAY = {
 		MemoryGame.deck = document.getElementsByClassName(DECK)[0];
 		let stars = document.getElementById('stars');
 		MemoryGame.stars = stars.cloneNode(true);
-		MemoryGame.startTime = new Date();
 	},
 	doPlay: function() {
+		setInterval(updateTime, 500);
 		MemoryGame.cards.forEach((currentElement) => {
 			currentElement.addEventListener('click', function() {
 				if (currentElement.classList.contains(MATCH)) return;
@@ -40,6 +40,10 @@ MemoryGame.PLAY = {
 				return;
 			});
 		});
+
+		function updateTime(){
+			document.getElementById('timer').innerHTML="The time is:" + Date();
+		}
 	},
 	trackMovesAndTime: function() {
 		if (MemoryGame.pairedArray.length === 2) {
@@ -64,11 +68,13 @@ MemoryGame.PLAY = {
 			}
 		}
 	},
+
 	doRestartGame: function() {
 		document.getElementsByClassName(RESTART)[0].addEventListener('click', function() {
 			restart();
 			resetMovesToZero();
 			resetStarts();
+			MemoryGame.DISPLAY.doShuffle();
 		});
 
 		function resetMovesToZero() {
@@ -152,7 +158,7 @@ MemoryGame.MODAL = {
 	displayModal: function() {
 		let move = document.getElementsByClassName(MOVES)[0].textContent;
 		let stars = document.getElementsByClassName(FULL_STAR).length;
-		let timeTaken = (new Date() - MemoryGame.startTime)/1000;
+		let timeTaken = (new Date() - MemoryGame.startTime) / 1000;
 		//replace with modal
 		let modal = document.getElementById('modal');
 		modal.style.display = 'block';
