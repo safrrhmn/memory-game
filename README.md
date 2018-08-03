@@ -1,20 +1,17 @@
-# Memory Game Project
+# Memory Game Project by Saifur Rahman - Front End Nanodegree
 
 ## Table of Contents
 
-* [Instructions](#instructions)
-* [Contributing](#contributing)
+* [Features](#features)
+* [URL](#url)
 
-## Instructions
+## features
 
-The starter project has some HTML and CSS styling to display a static version of the Memory Game project. You'll need to convert this project from a static project to an interactive one. This will require modifying the HTML and CSS files, but primarily the JavaScript file.
-
-To get started, open `js/app.js` and start building out the app's functionality
-
-For specific, detailed instructions, look at the project instructions in the [Udacity Classroom](https://classroom.udacity.com/me).
-
-## Contributing
-
-This repository is the starter code for _all_ Udacity students. Therefore, we most likely will not accept pull requests.
-
-For details, check out [CONTRIBUTING.md](CONTRIBUTING.md).
+The starter project has some HTML and CSS styling to display a static version of the Memory Game project. This project provides the following features to the user.
+        
+        1. Tracks the ratings of the users as per the number of moves made to complete the game.
+        2. Shows user the time taken.
+        3. A restart functionality to reset the game and board. This will recreate the deck of cards, timer and star used.
+        4. A modal pop up appears upon successfully completion of the game. This includes the remaining star, total time and number of moves made.
+## url
+https://safrrhmn.github.io/memory-game/
