@@ -11,7 +11,6 @@ const RESTART = 'restart';
 const CARD = 'card';
 const DECK = 'deck';
 const STAR_HALF_FULL = 'fa-star-half-o';
-const STAR_FULL_EMPTY = 'fa fa-star-o';
 const FULL_STAR = 'fa-star';
 let START_TIME = new Date().getTime();
 
